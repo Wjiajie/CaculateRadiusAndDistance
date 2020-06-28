@@ -9,6 +9,7 @@ struct Config
     bool m_caculate_distance;
     bool m_fit_cylinder_radius;
     double m_cluster_threshold;
+    double m_pcl_fit_distance;
 
     //pixel
     int m_temp_width_pixel;
@@ -19,12 +20,13 @@ struct Config
     double m_template_height_mm;
 
     Config(){};
-    Config(const bool visualization, const bool caculate_distance, const bool fit_cylinder_radius, const double cluster_threshold, const int temp_width_pixel, const int temp_l_height_pixel, const double template_width_mm, const double template_height_mm)
+    Config(const bool visualization, const bool caculate_distance, const bool fit_cylinder_radius, const double cluster_threshold,  double pcl_fit_distance, const int temp_width_pixel, const int temp_l_height_pixel, const double template_width_mm, const double template_height_mm)
     {
         this->m_visualization = visualization;
         this->m_caculate_distance = caculate_distance;
         this->m_fit_cylinder_radius = fit_cylinder_radius;
         this->m_cluster_threshold = cluster_threshold;
+        this->m_pcl_fit_distance = pcl_fit_distance;
         this->m_temp_width_pixel = temp_width_pixel;
         this->m_temp_l_height_pixel = temp_l_height_pixel;
         this->m_template_width_mm = template_width_mm;
@@ -271,7 +273,7 @@ public:
     ~Common(void){};
 };
 
-void fitCylinder(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_in, pcl::PointCloud<pcl::PointXYZ>::Ptr &cloud_out, double &radius);
+void fitCylinder(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_in, pcl::PointCloud<pcl::PointXYZ>::Ptr &cloud_out, double &radius, Config cfg);
 
 Eigen::MatrixXd toEigenMatrixXd(const cv::Mat &cvMat);
 vector<double> toStdVector(const cv::Mat &cvMat);

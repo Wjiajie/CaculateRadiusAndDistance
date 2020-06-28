@@ -10,8 +10,15 @@ void caculateRadiusAndDistance(const string path, string intput_image_l, string 
     string para_path = path + "/intrinsics.yml";
     common.ReadBibocularCameraPara(para_path, bino_cam);
 
-    Mat src_image_l = imread(intput_image_l);
-    Mat src_image_r = imread(intput_image_r);
+    Mat src_image_l_raw = imread(intput_image_l);
+    Mat src_image_r_raw = imread(intput_image_r);
+
+    Mat src_image_l;
+    Mat src_image_r;
+
+    //ImageDedistortion
+    common.ImageDedistortion(src_image_l_raw, src_image_l, bino_cam, 0);
+    common.ImageDedistortion(src_image_r_raw, src_image_r, bino_cam, 1);
 
     Mat temp_image_l = imread(feature_image_l);
     Mat temp_image_r = imread(feature_image_r);

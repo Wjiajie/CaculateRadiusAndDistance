@@ -32,7 +32,6 @@ void Common::ReadBibocularCameraPara(string path, BinocularCameraPara & bino_cam
 
 void Common::ImageDedistortion(Mat src, Mat & dst , BinocularCameraPara bino_cam, int flag)
 {
-
     Mat output;
     Mat	cameraMatrix, distCoeffs;
     Size imageSize;
@@ -51,9 +50,9 @@ void Common::ImageDedistortion(Mat src, Mat & dst , BinocularCameraPara bino_cam
     cout<<"cameraMatrix: "<<cameraMatrix<<endl;
     cout<<"distCoeffs: "<<distCoeffs<<endl;
 
-    Mat newCameraMatrix = cv::getOptimalNewCameraMatrix(cameraMatrix, distCoeffs, imageSize, 0);
-
+    Mat newCameraMatrix = cv::getOptimalNewCameraMatrix(cameraMatrix, distCoeffs, imageSize, 0);   
     undistort(src, dst, cameraMatrix, distCoeffs);
+
 }
 
 void Common::FindMatchPoint(string intput_image_l_path, string intput_image_r_path, vector<Rect> temp_vec, vector<FeatureInImage> & features_in_image, Config cfg)
@@ -973,7 +972,7 @@ void Common::PclCaculateRadius(vector<Structure> P, double & radius, Config cfg)
       */
 
     pcl::PointCloud<pcl::PointXYZ>::Ptr pointCloud_fit(new pcl::PointCloud<pcl::PointXYZ>);
-    fitCylinder(pointCloud, pointCloud_fit, radius);
+    fitCylinder(pointCloud, pointCloud_fit, radius, cfg);
     if(cfg.m_visualization)
     {
         boost::shared_ptr< pcl::visualization::PCLVisualizer > viewer(new pcl::visualization::PCLVisualizer("Ransac"));
@@ -994,7 +993,7 @@ void Common::PclCaculateRadius(vector<Structure> P, double & radius, Config cfg)
 }
 
 // use ransanc to fit cylinder
-void fitCylinder(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_in, pcl::PointCloud<pcl::PointXYZ>::Ptr &cloud_out, double &radius)
+void fitCylinder(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_in, pcl::PointCloud<pcl::PointXYZ>::Ptr &cloud_out, double &radius, Config cfg)
 {
     // Create segmentation object for cylinder segmentation and set all the parameters
     pcl::ModelCoefficients::Ptr coeffients_cylinder(new pcl::ModelCoefficients);
@@ -1018,7 +1017,7 @@ void fitCylinder(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_in, pcl::PointCloud<p
 
     seg.setNormalDistanceWeight(0.1);
     seg.setMaxIterations(10000);
-    seg.setDistanceThreshold(1);
+    seg.setDistanceThreshold(cfg.m_pcl_fit_distance);
     //seg.setProbability(0.99);
     seg.setRadiusLimits(0, 100);
     seg.setInputCloud(cloud_in);
